@@ -2,7 +2,7 @@ package br.com.lab.impacta.investment.domain.service.impl;
 
 import br.com.lab.impacta.investment.domain.exception.InvestmentAccountIsNotDebitException;
 import br.com.lab.impacta.investment.domain.exception.InvestmentAccountWithoutBalanceException;
-import br.com.lab.impacta.investment.domain.exception.InvestmentAccountWithoutBalanceForProductPrivateException;
+import br.com.lab.impacta.investment.domain.exception.InvestmentAccountWithoutBalanceForPrivateProductException;
 import br.com.lab.impacta.investment.domain.exception.InvestmentProductNotFoundException;
 import br.com.lab.impacta.investment.domain.model.Investment;
 import br.com.lab.impacta.investment.domain.model.Product;
@@ -41,11 +41,11 @@ public class InvestmentServiceImpl implements InvestmentService {
     @Value("${lab.investment.exceptions.account-without-balance-description}")
     private String descriptionExceptionAccountWithoutBalance;
 
-    @Value("${lab.investment.exceptions.account-without-balance-for-product-private-message}")
-    private String messageExceptionAccountWithoutBalanceForProductPrivate;
+    @Value("${lab.investment.exceptions.account-without-balance-for-private-product-message}")
+    private String messageExceptionAccountWithoutBalanceForPrivateProduct;
 
-    @Value("${lab.investment.exceptions.account-without-balance-for-product-private-description}")
-    private String descriptionExceptionAccountWithoutBalanceForProductPrivate;
+    @Value("${lab.investment.exceptions.account-without-balance-for-private-product-description}")
+    private String descriptionExceptionAccountWithoutBalanceForPrivateProduct;
 
     @Value("${lab.investment.exceptions.account-is-not-debited-message}")
     private String messageExceptionAccountIfNotDebited;
@@ -54,7 +54,7 @@ public class InvestmentServiceImpl implements InvestmentService {
     private String descriptionExceptionAccountIfNotDebited;
 
     @Override
-    public Investment invest(Long productId, Long accountId, Double valueInvestment) {
+    public Investment invest(Long productId, Long accountId, Double investmentValue) {
         Optional<Product> product = productRepository.findById(productId);
 
         if (product.isEmpty())
@@ -62,7 +62,7 @@ public class InvestmentServiceImpl implements InvestmentService {
                     messageExceptionProductNotFound,
                     descriptionExceptionProductNotFound);
 
-        Investment investment = new Investment(productId, accountId, valueInvestment);
+        Investment investment = new Investment(productId, accountId, investmentValue);
 
         AccountBalanceVO accountBalanceVO = accountFacade.getAccountBalanceById(accountId);
 
@@ -71,13 +71,13 @@ public class InvestmentServiceImpl implements InvestmentService {
                     messageExceptionAccountWithoutBalance,
                     descriptionExceptionAccountWithoutBalance);
 
-        if (!investment.verifyProductPrivateOrDefaultForInvestment(accountBalanceVO.getBalance(),
+        if (!investment.verifyPrivateOrDefaultProductForInvestment(accountBalanceVO.getBalance(),
                 product.get()))
-            throw new InvestmentAccountWithoutBalanceForProductPrivateException(
-                    messageExceptionAccountWithoutBalanceForProductPrivate,
-                    descriptionExceptionAccountWithoutBalanceForProductPrivate);
+            throw new InvestmentAccountWithoutBalanceForPrivateProductException(
+                    messageExceptionAccountWithoutBalanceForPrivateProduct,
+                    descriptionExceptionAccountWithoutBalanceForPrivateProduct);
 
-        boolean isDebited = accountFacade.debitAccount(accountId, valueInvestment);
+        boolean isDebited = accountFacade.debitAccount(accountId, investmentValue);
 
         if (!isDebited)
             throw new InvestmentAccountIsNotDebitException(

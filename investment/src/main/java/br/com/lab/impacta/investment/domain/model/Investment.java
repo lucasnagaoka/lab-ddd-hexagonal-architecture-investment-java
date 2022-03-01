@@ -1,6 +1,5 @@
 package br.com.lab.impacta.investment.domain.model;
 
-import io.swagger.models.auth.In;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -41,7 +40,7 @@ public class Investment {
         return this.value < accountBalance;
     }
 
-    public boolean verifyProductPrivateOrDefaultForInvestment(Double accountBalance,
+    public boolean verifyPrivateOrDefaultProductForInvestment(Double accountBalance,
                                                               Product product) {
 
         if (!product.isPrivateInvestment()) {

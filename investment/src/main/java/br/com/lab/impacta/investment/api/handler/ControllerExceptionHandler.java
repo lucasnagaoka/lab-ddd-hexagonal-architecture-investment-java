@@ -3,7 +3,7 @@ package br.com.lab.impacta.investment.api.handler;
 import br.com.lab.impacta.investment.application.dto.response.ErrorMessageResponse;
 import br.com.lab.impacta.investment.domain.exception.InvestmentAccountIsNotDebitException;
 import br.com.lab.impacta.investment.domain.exception.InvestmentAccountWithoutBalanceException;
-import br.com.lab.impacta.investment.domain.exception.InvestmentAccountWithoutBalanceForProductPrivateException;
+import br.com.lab.impacta.investment.domain.exception.InvestmentAccountWithoutBalanceForPrivateProductException;
 import br.com.lab.impacta.investment.domain.exception.InvestmentProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +27,8 @@ public class ControllerExceptionHandler {
         return getErrorMessageResponse(exception.getMessage(), exception.getDescription(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(InvestmentAccountWithoutBalanceForProductPrivateException.class)
-    public ResponseEntity<ErrorMessageResponse> errorWithoutBalanceForPrivate(InvestmentAccountWithoutBalanceForProductPrivateException exception) {
+    @ExceptionHandler(InvestmentAccountWithoutBalanceForPrivateProductException.class)
+    public ResponseEntity<ErrorMessageResponse> errorWithoutBalanceForPrivate(InvestmentAccountWithoutBalanceForPrivateProductException exception) {
         return getErrorMessageResponse(exception.getMessage(), exception.getDescription(), HttpStatus.BAD_REQUEST);
     }
 
